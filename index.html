@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free scientific calculator with all trigonometric functions + financial, health, and math tools. AdSense-ready, mobile-friendly, and 100% free.">
+  <title>Scientific Calc Pro – Free Online Calculators</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { background: #f9f9f9; color: #333; line-height: 1.6; padding-bottom: 40px; }
+    
+    /* Header */
+    header {
+      background: #fff;
+      padding: 15px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo { font-size: 24px; font-weight: bold; color: #0066cc; }
+    nav a { margin-left: 20px; text-decoration: none; color: #0066cc; }
+
+    /* Calculator Section */
+    .calculator-section {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .calc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    #mode-display {
+      font-size: 14px;
+      color: #666;
+    }
+    #display {
+      width: 100%;
+      height: 70px;
+      font-size: 28px;
+      text-align: right;
+      padding: 0 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #f0f0f0;
+      margin-bottom: 15px;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+    }
+    button {
+      height: 50px;
+      font-size: 13px;
+      border: none;
+      border-radius: 6px;
+      background: #444;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover { background: #555; }
+    .special { background: #d35400; }
+
+    /* Guide */
+    .guide {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* Categories in Row */
+    .categories-row-section {
+      max-width: 1200px;
+      margin: 50px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .categories-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      margin-top: 15px;
+    }
+    .category-item {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+    .category-icon {
+      font-size: 26px;
+      margin-right: 8px;
+    }
+    .category-item a {
+      text-decoration: none;
+      color: #0066cc;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .category-item a:hover {
+      text-decoration: underline;
+    }
+
+    /* Calculator Lists */
+    .calc-category-section {
+      max-width: 850px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .calc-category-section h2 {
+      text-align: center;
+      margin: 40px 0 20px;
+      color: #0066cc;
+      font-size: 24px;
+    }
+    .calc-list {
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 40px;
+    }
+    .calc-list ul {
+      list-style: none;
+      padding: 0;
+    }
+    .calc-list li {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px dashed #eee;
+    }
+    .calc-list li:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .calc-list a {
+      font-size: 18px;
+      font-weight: bold;
+      color: #0066cc;
+      text-decoration: none;
+    }
+    .calc-list a:hover {
+      text-decoration: underline;
+    }
+    .calc-desc {
+      color: #555;
+      font-size: 14px;
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* Footer */
+    footer {
+      background: #222;
+      color: #ddd;
+      text-align: center;
+      padding: 25px 20px;
+      margin-top: 50px;
+    }
+    .footer-links {
+      margin: 15px 0;
+    }
+    .footer-links a {
+      color: #aaa;
+      text-decoration: none;
+      margin: 0 12px;
+      font-size: 14px;
+    }
+    .footer-links a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+    .copyright {
+      font-size: 13px;
+      color: #777;
+      margin-top: 15px;
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .buttons { grid-template-columns: repeat(5, 1fr); }
+      button { font-size: 12px; }
+      .header-content { flex-direction: column; gap: 10px; }
+      .categories-row {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .category-item {
+        justify-content: center;
+      }
+      .footer-links a {
+        display: block;
+        margin: 6px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-content">
+    <div class="logo">Scientific Calc Pro</div>
+    <nav>
+      <a href="blog.html">Blog</a>
+      <a href="privacy-policy.html">Privacy</a>
+      <b>·</b>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- SCIENTIFIC CALCULATOR -->
+<div class="calculator-section">
+  <div class="calc-header">
+    <h2>Scientific Calculator</h2>
+    <div id="mode-display">DEG</div>
+  </div>
+  <input type="text" id="display" readonly placeholder="0" />
+
+  <div class="buttons">
+    <button class="special" onclick="toggleMode()">DEG/RAD</button>
+    <button class="special" onclick="clearDisplay()">C</button>
+    <button class="special" onclick="deleteLast()">⌫</button>
+    <button onclick="appendToDisplay('/')">/</button>
+    <button onclick="appendToDisplay('*')">×</button>
+    <button onclick="appendToDisplay('(')">(</button>
+
+    <button onclick="appendToDisplay('sin(')">sin</button>
+    <button onclick="appendToDisplay('7')">7</button>
+    <button onclick="appendToDisplay('8')">8</button>
+    <button onclick="appendToDisplay('9')">9</button>
+    <button onclick="appendToDisplay('-')">−</button>
+    <button onclick="appendToDisplay(')')">)</button>
+
+    <button onclick="appendToDisplay('cos(')">cos</button>
+    <button onclick="appendToDisplay('4')">4</button>
+    <button onclick="appendToDisplay('5')">5</button>
+    <button onclick="appendToDisplay('6')">6</button>
+    <button onclick="appendToDisplay('+')">+</button>
+    <button onclick="appendToDisplay('Math.PI')">π</button>
+
+    <button onclick="appendToDisplay('tan(')">tan</button>
+    <button onclick="appendToDisplay('1')">1</button>
+    <button onclick="appendToDisplay('2')">2</button>
+    <button onclick="appendToDisplay('3')">3</button>
+    <button onclick="appendToDisplay('Math.E')">e</button>
+    <button onclick="appendToDisplay('Math.pow(')">x^y</button>
+
+    <button onclick="appendToDisplay('asin(')">asin</button>
+    <button onclick="appendToDisplay('0')">0</button>
+    <button onclick="appendToDisplay('.')">.</button>
+    <button onclick="square()">x²</button>
+    <button onclick="reciprocal()">1/x</button>
+    <button onclick="calculate()">=</button>
+
+    <button onclick="appendToDisplay('acos(')">acos</button>
+    <button onclick="squareRoot()">√</button>
+    <button onclick="cubeRoot()">∛</button>
+    <button onclick="appendToDisplay('sinh(')">sinh</button>
+    <button onclick="appendToDisplay('cosh(')">cosh</button>
+    <button onclick="appendToDisplay('tanh(')">tanh</button>
+
+    <button onclick="appendToDisplay('atan(')">atan</button>
+    <button onclick="appendToDisplay('Math.log10(')">log</button>
+    <button onclick="appendToDisplay('Math.log(')">ln</button>
+    <button onclick="tenPower()">10^x</button>
+    <button onclick="exp()">e^x</button>
+    <button onclick="factorial()">x!</button>
+  </div>
+</div>
+
+<!-- HOW TO USE -->
+<div class="guide">
+  <h3>How to Use</h3>
+  <p>
+    This calculator supports all trigonometric functions in <strong>DEG</strong> mode by default.
+    Press <strong>DEG/RAD</strong> to switch. Examples: <code>sin(30)</code>, <code>log(100)</code>, <code>5^2</code>.
+  </p>
+</div>
+
+<!-- 4 HEADINGS IN A ROW -->
+<div class="categories-row-section">
+  <h2>Explore Calculator Categories</h2>
+  <div class="categories-row">
+    <div class="category-item">
+      <span class="category-icon">💰</span>
+      <a href="financial.html">Financial Calculator</a>
+    </div>
+    <div class="category-item">
+      <span class="category-icon">❤️</span>
+      <a href="fitness.html">Fitness & Health Calculator</a>
+    </div>
+    <div class="category-item">
+      <span class="category-icon">🧮</span>
+      <a href="math.html">Math Calculator</a>
+    </div>
+    <div class="category-item">
+      <span class="category-icon">🛠️</span>
+      <a href="other.html">Other Calculator</a>
+    </div>
+  </div>
+</div>
+
+<!-- === ALL CALCULATOR CATEGORIES === -->
+<div class="calc-category-section">
+  <h2>Financial Calculators</h2>
+  <div class="calc-list">
+    <ul>
+      <li>
+        <a href="loan-calculator.html">Loan Calculator</a>
+        <span class="calc-desc">Estimate monthly payments for personal, auto, or student loans.</span>
+      </li>
+      <li>
+        <a href="mortgage-calculator.html">Mortgage Calculator</a>
+        <span class="calc-desc">Calculate home loan EMI, total interest, and amortization schedule.</span>
+      </li>
+      <li>
+        <a href="compound-interest-calculator.html">Compound Interest Calculator</a>
+        <span class="calc-desc">See how your investment grows with compounding over time.</span>
+      </li>
+      <li>
+        <a href="gst-calculator.html">GST / Tax Calculator</a>
+        <span class="calc-desc">Add or remove sales tax, VAT, or GST from any amount instantly.</span>
+      </li>
+      <li>
+        <a href="tip-calculator.html">Tip Calculator</a>
+        <span class="calc-desc">Split bills and calculate fair tips for restaurants or services.</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="calc-category-section">
+  <h2>Fitness & Health Calculators</h2>
+  <div class="calc-list">
+    <ul>
+      <li>
+        <a href="bmi-calculator.html">BMI Calculator</a>
+        <span class="calc-desc">Check your Body Mass Index using metric or imperial units.</span>
+      </li>
+      <li>
+        <a href="calorie-calculator.html">Calorie Calculator</a>
+        <span class="calc-desc">Estimate daily calorie needs for weight loss, gain, or maintenance.</span>
+      </li>
+      <li>
+        <a href="pregnancy-due-date.html">Pregnancy Due Date Calculator</a>
+        <span class="calc-desc">Predict your baby’s due date based on last menstrual period.</span>
+      </li>
+      <li>
+        <a href="body-fat-calculator.html">Body Fat Calculator</a>
+        <span class="calc-desc">Estimate body fat percentage using US Navy or BMI method.</span>
+      </li>
+      <li>
+        <a href="bmr-calculator.html">BMR Calculator</a>
+        <span class="calc-desc">Calculate your Basal Metabolic Rate (calories burned at rest).</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="calc-category-section">
+  <h2>Math Calculators</h2>
+  <div class="calc-list">
+    <ul>
+      <li>
+        <a href="percentage-calculator.html">Percentage Calculator</a>
+        <span class="calc-desc">Find % of a number, % increase/decrease, and more.</span>
+      </li>
+      <li>
+        <a href="age-calculator.html">Age Calculator</a>
+        <span class="calc-desc">Calculate your exact age in years, months, and days.</span>
+      </li>
+      <li>
+        <a href="grade-calculator.html">Grade Calculator</a>
+        <span class="calc-desc">Compute final course grades based on assignments and exams.</span>
+      </li>
+      <li>
+        <a href="date-calculator.html">Date Calculator</a>
+        <span class="calc-desc">Add or subtract days, find days between two dates.</span>
+      </li>
+      <li>
+        <a href="fraction-calculator.html">Fraction Calculator</a>
+        <span class="calc-desc">Add, subtract, multiply, or divide fractions easily.</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="calc-category-section">
+  <h2>Other Useful Calculators</h2>
+  <div class="calc-list">
+    <ul>
+      <li>
+        <a href="age-difference-calculator.html">Age Difference Calculator</a>
+        <span class="calc-desc">Find the exact age gap between two people.</span>
+      </li>
+      <li>
+        <a href="gpa-calculator.html">GPA Calculator</a>
+        <span class="calc-desc">Calculate semester or cumulative GPA for school or college.</span>
+      </li>
+      <li>
+        <a href="ovulation-calculator.html">Ovulation Calculator</a>
+        <span class="calc-desc">Predict fertile days and ovulation dates in your cycle.</span>
+      </li>
+      <li>
+        <a href="concrete-calculator.html">Concrete Calculator</a>
+        <span class="calc-desc">Estimate how much concrete you need for slabs, columns, or footings.</span>
+      </li>
+      <li>
+        <a href="salary-calculator.html">Salary / Hourly Wage Calculator</a>
+        <span class="calc-desc">Convert annual salary to hourly rate or vice versa.</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="terms-of-use.html">Terms of Use</a>
+    <a href="about-us.html">About Us</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+    <a href="sitemap.html">Sitemap</a>
+  </div>
+  <div class="copyright">
+    &copy; 2025 Scientific Calc Pro. All rights reserved.
+  </div>
+</footer>
+
+<!-- CALCULATOR JAVASCRIPT -->
+<script>
+  const display = document.getElementById('display');
+  const modeDisplay = document.getElementById('mode-display');
+  let isRadians = false;
+
+  function toggleMode() {
+    isRadians = !isRadians;
+    modeDisplay.textContent = isRadians ? 'RAD' : 'DEG';
+  }
+
+  function appendToDisplay(value) {
+    if (display.value === 'Error') display.value = '';
+    display.value += value;
+  }
+
+  function clearDisplay() {
+    display.value = '';
+  }
+
+  function deleteLast() {
+    display.value = display.value.slice(0, -1);
+  }
+
+  function square() {
+    display.value += '**2';
+  }
+
+  function squareRoot() {
+    display.value += 'Math.sqrt(';
+  }
+
+  function cubeRoot() {
+    display.value += 'Math.cbrt(';
+  }
+
+  function reciprocal() {
+    display.value = '1/(' + (display.value || '1') + ')';
+  }
+
+  function tenPower() {
+    display.value += 'Math.pow(10,';
+  }
+
+  function exp() {
+    display.value += 'Math.exp(';
+  }
+
+  function factorial() {
+    const n = parseFloat(display.value);
+    if (isNaN(n) || n < 0 || !Number.isInteger(n)) {
+      display.value = 'Error';
+      return;
+    }
+    let result = 1;
+    for (let i = 2; i <= n; i++) result *= i;
+    display.value = result;
+  }
+
+  function calculate() {
+    try {
+      let expr = display.value
+        .replace(/×/g, '*')
+        .replace(/−/g, '-')
+        .replace(/π/g, 'Math.PI')
+        .replace(/e/g, 'Math.E')
+        .replace(/\^/g, '**');
+
+      const trigFuncs = ['sin', 'cos', 'tan', 'sinh', 'cosh', 'tanh', 'asin', 'acos', 'atan'];
+      trigFuncs.forEach(func => {
+        const regex = new RegExp(`${func}\\(`, 'g');
+        expr = expr.replace(regex, `Math.${func}(`);
+      });
+
+      if (!isRadians) {
+        expr = expr.replace(/Math\.(sin|cos|tan)\(/g, (match, func) => {
+          return `Math.${func}((Math.PI/180)*`;
+        });
+        expr = expr.replace(/Math\.(asin|acos|atan)\(/g, (match, func) => {
+          return `(180/Math.PI)*Math.${func}(`;
+        });
+      }
+
+      if (/^[0-9+\-*/()., MathPIElogsqrtcbrownatf]+$/.test(expr.replace(/Math\./g, ''))) {
+        let result = eval(expr);
+        display.value = isNaN(result) || !isFinite(result) ? 'Error' : result;
+      } else {
+        display.value = 'Error';
+      }
+    } catch (e) {
+      display.value = 'Error';
+    }
+  }
+</script>
+
+</body>
+</html>
