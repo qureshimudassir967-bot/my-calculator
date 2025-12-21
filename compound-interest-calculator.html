@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free Compound Interest Calculator – See how your savings or investments grow over time with daily, monthly, or annual compounding.">
+  <title>Compound Interest Calculator – Scientific Calc Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 26px;
+    }
+    .calculator {
+      background: #f8fbff;
+      padding: 25px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #444;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0055aa;
+    }
+    .results {
+      margin-top: 25px;
+      padding: 20px;
+      background: #eef5ff;
+      border-radius: 8px;
+      display: none;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .result-label {
+      font-weight: bold;
+    }
+    .result-value {
+      color: #0066cc;
+      font-weight: bold;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #0066cc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .guide {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .guide h3 {
+      margin-bottom: 10px;
+      color: #0066cc;
+    }
+    .formula {
+      background: #f0f8ff;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-family: monospace;
+      font-size: 15px;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 20px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Compound Interest Calculator</h1>
+      <p>See how your money grows with compound interest over time.</p>
+    </header>
+
+    <div class="calculator">
+      <div class="input-group">
+        <label for="principal">Initial Investment ($)</label>
+        <input type="number" id="principal" placeholder="e.g. 1000" min="0" value="1000">
+      </div>
+      <div class="input-group">
+        <label for="rate">Annual Interest Rate (%)</label>
+        <input type="number" id="rate" placeholder="e.g. 5" step="0.01" min="0" value="5">
+      </div>
+      <div class="input-group">
+        <label for="time">Time Period (Years)</label>
+        <input type="number" id="time" placeholder="e.g. 10" min="0" step="0.1" value="10">
+      </div>
+      <div class="input-group">
+        <label for="compound">Compounding Frequency</label>
+        <select id="compound">
+          <option value="365">Daily</option>
+          <option value="12">Monthly</option>
+          <option value="4">Quarterly</option>
+          <option value="1" selected>Yearly</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="monthlyDeposit">Monthly Deposit ($)</label>
+        <input type="number" id="monthlyDeposit" placeholder="e.g. 100 (optional)" min="0" value="0">
+      </div>
+
+      <button onclick="calculateCompound()">Calculate</button>
+
+      <div class="results" id="results">
+        <div class="result-row">
+          <span class="result-label">Initial Investment:</span>
+          <span class="result-value" id="initialAmount">$0.00</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Total Deposits:</span>
+          <span class="result-value" id="totalDeposits">$0.00</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Final Amount:</span>
+          <span class="result-value" id="finalAmount">$0.00</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Total Interest Earned:</span>
+          <span class="result-value" id="totalInterest">$0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide">
+      <h3>How It Works</h3>
+      <p>
+        Compound interest means you earn interest on both your initial investment <strong>and</strong> the accumulated interest.
+        The more frequently interest is compounded, the faster your money grows.
+      </p>
+      <p><strong>Formula:</strong></p>
+      <div class="formula">
+        A = P(1 + r/n)<sup>nt</sup> + PMT × [((1 + r/n)<sup>nt</sup> - 1) / (r/n)]
+      </div>
+      <p>
+        Where:<br>
+        <strong>A</strong> = Final amount<br>
+        <strong>P</strong> = Principal (initial investment)<br>
+        <strong>r</strong> = Annual interest rate (decimal)<br>
+        <strong>n</strong> = Compounding frequency per year<br>
+        <strong>t</strong> = Time in years<br>
+        <strong>PMT</strong> = Monthly deposit
+      </p>
+    </div>
+
+    <a href="financial.html" class="back-link">← Back to Financial Calculators</a>
+  </div>
+
+  <script>
+    function calculateCompound() {
+      const principal = parseFloat(document.getElementById('principal').value) || 0;
+      const rate = parseFloat(document.getElementById('rate').value) || 0;
+      const time = parseFloat(document.getElementById('time').value) || 0;
+      const compound = parseInt(document.getElementById('compound').value);
+      const monthlyDeposit = parseFloat(document.getElementById('monthlyDeposit').value) || 0;
+
+      if (principal < 0 || rate < 0 || time < 0 || monthlyDeposit < 0) {
+        alert("Please enter non-negative values.");
+        return;
+      }
+
+      const r = rate / 100; // annual rate as decimal
+      const n = compound;
+      const t = time;
+
+      // Future value of principal
+      let futureValuePrincipal = principal * Math.pow(1 + r / n, n * t);
+
+      // Future value of monthly deposits
+      let futureValueDeposits = 0;
+      if (monthlyDeposit > 0 && r > 0) {
+        const monthlyRate = r / 12;
+        const totalMonths = t * 12;
+        futureValueDeposits = monthlyDeposit * (Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate;
+      } else if (monthlyDeposit > 0) {
+        futureValueDeposits = monthlyDeposit * t * 12;
+      }
+
+      const finalAmount = futureValuePrincipal + futureValueDeposits;
+      const totalDeposits = principal + (monthlyDeposit * t * 12);
+      const totalInterest = finalAmount - totalDeposits;
+
+      // Update results
+      document.getElementById('initialAmount').textContent = '$' + principal.toFixed(2);
+      document.getElementById('totalDeposits').textContent = '$' + totalDeposits.toFixed(2);
+      document.getElementById('finalAmount').textContent = '$' + finalAmount.toFixed(2);
+      document.getElementById('totalInterest').textContent = '$' + totalInterest.toFixed(2);
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    // Allow Enter key to calculate
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        calculateCompound();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free Loan Calculator – Estimate your monthly EMI, total interest, and repayment schedule for personal, auto, or student loans.">
+  <title>Loan Calculator – Scientific Calc Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 26px;
+    }
+    .calculator {
+      background: #f8fbff;
+      padding: 25px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #444;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0055aa;
+    }
+    .results {
+      margin-top: 25px;
+      padding: 20px;
+      background: #eef5ff;
+      border-radius: 8px;
+      display: none;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .result-label {
+      font-weight: bold;
+    }
+    .result-value {
+      color: #0066cc;
+      font-weight: bold;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #0066cc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .guide {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .guide h3 {
+      margin-bottom: 10px;
+      color: #0066cc;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 20px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Loan Calculator</h1>
+      <p>Calculate your monthly payment, total interest, and repayment schedule.</p>
+    </header>
+
+    <div class="calculator">
+      <div class="input-group">
+        <label for="loanAmount">Loan Amount ($)</label>
+        <input type="number" id="loanAmount" placeholder="e.g. 10000" min="1" value="10000">
+      </div>
+      <div class="input-group">
+        <label for="interestRate">Annual Interest Rate (%)</label>
+        <input type="number" id="interestRate" placeholder="e.g. 5" step="0.1" min="0" value="5">
+      </div>
+      <div class="input-group">
+        <label for="loanTerm">Loan Term (Months)</label>
+        <input type="number" id="loanTerm" placeholder="e.g. 60" min="1" value="60">
+      </div>
+      <button onclick="calculateLoan()">Calculate</button>
+
+      <div class="results" id="results">
+        <div class="result-row">
+          <span class="result-label">Monthly Payment:</span>
+          <span class="result-value" id="monthlyPayment">$0.00</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Total Payment:</span>
+          <span class="result-value" id="totalPayment">$0.00</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Total Interest:</span>
+          <span class="result-value" id="totalInterest">$0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide">
+      <h3>How to Use</h3>
+      <p>
+        Enter your <strong>loan amount</strong>, <strong>annual interest rate</strong>, and <strong>loan term in months</strong>. 
+        Click "Calculate" to see your monthly EMI and total cost.
+      </p>
+      <p>
+        Example: A $10,000 loan at 5% annual interest for 5 years (60 months) → ~$188.71/month.
+      </p>
+    </div>
+
+    <a href="financial.html" class="back-link">← Back to Financial Calculators</a>
+  </div>
+
+  <script>
+    function calculateLoan() {
+      const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+      const annualRate = parseFloat(document.getElementById('interestRate').value);
+      const months = parseInt(document.getElementById('loanTerm').value);
+
+      if (isNaN(loanAmount) || isNaN(annualRate) || isNaN(months) || 
+          loanAmount <= 0 || annualRate < 0 || months <= 0) {
+        alert("Please enter valid positive numbers.");
+        return;
+      }
+
+      const monthlyRate = annualRate / 100 / 12;
+      let monthlyPayment = 0;
+
+      if (monthlyRate > 0) {
+        monthlyPayment = loanAmount * monthlyRate * Math.pow(1 + monthlyRate, months) / 
+                        (Math.pow(1 + monthlyRate, months) - 1);
+      } else {
+        monthlyPayment = loanAmount / months;
+      }
+
+      const totalPayment = monthlyPayment * months;
+      const totalInterest = totalPayment - loanAmount;
+
+      document.getElementById('monthlyPayment').textContent = '$' + monthlyPayment.toFixed(2);
+      document.getElementById('totalPayment').textContent = '$' + totalPayment.toFixed(2);
+      document.getElementById('totalInterest').textContent = '$' + totalInterest.toFixed(2);
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    // Allow Enter key to calculate
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        calculateLoan();
+      }
+    });
+  </script>
+</body>
+</html>
