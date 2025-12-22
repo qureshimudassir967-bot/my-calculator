@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free Age Calculator – Find your exact age in years, months, and days from your birth date.">
+  <title>Age Calculator – Scientific Calc Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 26px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #444;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover { background: #0055aa; }
+    .results {
+      margin-top: 25px;
+      padding: 20px;
+      background: #eef5ff;
+      border-radius: 8px;
+      display: none;
+      text-align: center;
+    }
+    .age-result {
+      font-size: 24px;
+      color: #0066cc;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #0066cc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .guide {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .guide h3 { margin-bottom: 10px; color: #0066cc; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Age Calculator</h1>
+      <p>Calculate your exact age in years, months, and days.</p>
+    </header>
+
+    <div class="input-group">
+      <label for="birthDate">Birth Date</label>
+      <input type="date" id="birthDate" max="">
+    </div>
+
+    <button onclick="calculateAge()">Calculate Age</button>
+
+    <div class="results" id="results">
+      <div class="age-result" id="ageResult"></div>
+      <div id="ageDetails"></div>
+    </div>
+
+    <div class="guide">
+      <h3>About This Calculator</h3>
+      <p>
+        This tool calculates your precise age by accounting for leap years and varying month lengths.
+        Great for school projects, legal documents, or just curiosity!
+      </p>
+    </div>
+
+    <a href="math.html" class="back-link">← Back to Math Calculators</a>
+  </div>
+
+  <script>
+    // Set max date to today
+    document.getElementById('birthDate').max = new Date().toISOString().split('T')[0];
+
+    function calculateAge() {
+      const birthInput = document.getElementById('birthDate').value;
+      if (!birthInput) {
+        alert("Please select a birth date.");
+        return;
+      }
+
+      const birthDate = new Date(birthInput);
+      const today = new Date();
+
+      if (birthDate > today) {
+        alert("Birth date cannot be in the future.");
+        return;
+      }
+
+      let years = today.getFullYear() - birthDate.getFullYear();
+      let months = today.getMonth() - birthDate.getMonth();
+      let days = today.getDate() - birthDate.getDate();
+
+      if (days < 0) {
+        months--;
+        const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+        days += lastMonth.getDate();
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      const ageText = `${years} years, ${months} months, ${days} days`;
+      document.getElementById('ageResult').textContent = ageText;
+      document.getElementById('ageDetails').innerHTML = `
+        Born on: ${birthDate.toDateString()}<br>
+        Today is: ${today.toDateString()}
+      `;
+      document.getElementById('results').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

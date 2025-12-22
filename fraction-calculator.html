@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free Fraction Calculator – Add, subtract, multiply, or divide fractions and mixed numbers.">
+  <title>Fraction Calculator – Scientific Calc Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 26px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #444;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    .operator {
+      text-align: center;
+      font-size: 24px;
+      margin: 10px 0;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover { background: #0055aa; }
+    .results {
+      margin-top: 25px;
+      padding: 20px;
+      background: #eef5ff;
+      border-radius: 8px;
+      display: none;
+      text-align: center;
+    }
+    .result-value {
+      color: #0066cc;
+      font-weight: bold;
+      font-size: 20px;
+      margin: 10px 0;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #0066cc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .guide {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .guide h3 { margin-bottom: 10px; color: #0066cc; }
+    .example {
+      background: #f0f8ff;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Fraction Calculator</h1>
+      <p>Add, subtract, multiply, or divide fractions and mixed numbers.</p>
+    </header>
+
+    <div class="input-group">
+      <label for="frac1">Fraction 1</label>
+      <input type="text" id="frac1" placeholder="e.g. 1/2 or 2 3/4" value="1/2">
+    </div>
+    <div class="operator">
+      <select id="operation" style="font-size:18px;padding:5px;">
+        <option value="add">+</option>
+        <option value="subtract">−</option>
+        <option value="multiply">×</option>
+        <option value="divide">÷</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="frac2">Fraction 2</label>
+      <input type="text" id="frac2" placeholder="e.g. 3/4 or 1 1/2" value="3/4">
+    </div>
+
+    <button onclick="calculateFraction()">Calculate</button>
+
+    <div class="results" id="results">
+      <div class="result-value" id="fracResult"></div>
+    </div>
+
+    <div class="guide">
+      <h3>How to Enter Fractions</h3>
+      <p>
+        • Simple: <code>1/2</code>, <code>3/4</code><br>
+        • Mixed: <code>2 3/4</code> (with space)<br>
+        • Whole: <code>5</code>
+      </p>
+      <div class="example">
+        Example: <code>1 1/2 + 2/3 = 13/6 or 2 1/6</code>
+      </div>
+    </div>
+
+    <a href="math.html" class="back-link">← Back to Math Calculators</a>
+  </div>
+
+  <script>
+    function parseFraction(fracStr) {
+      fracStr = fracStr.trim();
+      if (fracStr.includes(' ')) {
+        const parts = fracStr.split(' ');
+        const whole = parseInt(parts[0]);
+        const fracPart = parts[1].split('/');
+        const num = parseInt(fracPart[0]);
+        const den = parseInt(fracPart[1]);
+        return { num: whole * den + num, den: den };
+      } else if (fracStr.includes('/')) {
+        const parts = fracStr.split('/');
+        return { num: parseInt(parts[0]), den: parseInt(parts[1]) };
+      } else {
+        return { num: parseInt(fracStr), den: 1 };
+      }
+    }
+
+    function gcd(a, b) {
+      return b ? gcd(b, a % b) : a;
+    }
+
+    function formatFraction(num, den) {
+      if (den === 1) return num.toString();
+      const g = gcd(Math.abs(num), den);
+      num /= g;
+      den /= g;
+      if (num > den) {
+        const whole = Math.floor(num / den);
+        const remainder = num % den;
+        return remainder ? `${whole} ${remainder}/${den}` : whole.toString();
+      }
+      return `${num}/${den}`;
+    }
+
+    function calculateFraction() {
+      try {
+        const f1 = parseFraction(document.getElementById('frac1').value);
+        const f2 = parseFraction(document.getElementById('frac2').value);
+        const op = document.getElementById('operation').value;
+
+        let resultNum, resultDen;
+        if (op === 'add') {
+          resultNum = f1.num * f2.den + f2.num * f1.den;
+          resultDen = f1.den * f2.den;
+        } else if (op === 'subtract') {
+          resultNum = f1.num * f2.den - f2.num * f1.den;
+          resultDen = f1.den * f2.den;
+        } else if (op === 'multiply') {
+          resultNum = f1.num * f2.num;
+          resultDen = f1.den * f2.den;
+        } else if (op === 'divide') {
+          resultNum = f1.num * f2.den;
+          resultDen = f1.den * f2.num;
+        }
+
+        if (resultDen === 0) throw new Error("Division by zero");
+        const result = formatFraction(resultNum, resultDen);
+        document.getElementById('fracResult').textContent = `Result: ${result}`;
+        document.getElementById('results').style.display = 'block';
+      } catch (e) {
+        alert("Please enter valid fractions (e.g., 1/2, 2 3/4).");
+      }
+    }
+
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') calculateFraction();
+    });
+  </script>
+</body>
+</html>
