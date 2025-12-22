@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free BMR Calculator – Calculate your Basal Metabolic Rate (calories burned at rest) using Mifflin-St Jeor or Harris-Benedict formulas.">
+  <title>BMR Calculator – Scientific Calc Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 26px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #444;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0055aa;
+    }
+    .results {
+      margin-top: 25px;
+      padding: 20px;
+      background: #eef5ff;
+      border-radius: 8px;
+      display: none;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .result-label {
+      font-weight: bold;
+    }
+    .result-value {
+      color: #0066cc;
+      font-weight: bold;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #0066cc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .guide {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .guide h3 {
+      margin-bottom: 10px;
+      color: #0066cc;
+    }
+    .formula {
+      background: #f0f8ff;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 8px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>BMR Calculator</h1>
+      <p>Calculate your Basal Metabolic Rate — calories burned at complete rest.</p>
+    </header>
+
+    <div class="calculator">
+      <div class="input-group">
+        <label for="age">Age (years)</label>
+        <input type="number" id="age" placeholder="e.g. 30" min="1" max="120" value="30">
+      </div>
+      <div class="input-group">
+        <label>Gender</label>
+        <div style="display:flex;gap:15px;">
+          <label><input type="radio" name="gender" value="male" checked> Male</label>
+          <label><input type="radio" name="gender" value="female"> Female</label>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="weight">Weight (kg)</label>
+        <input type="number" id="weight" placeholder="e.g. 70" min="1" value="70">
+      </div>
+      <div class="input-group">
+        <label for="height">Height (cm)</label>
+        <input type="number" id="height" placeholder="e.g. 175" min="1" value="175">
+      </div>
+      <div class="input-group">
+        <label for="formula">Formula</label>
+        <select id="formula">
+          <option value="mifflin">Mifflin-St Jeor (Most Accurate)</option>
+          <option value="harris">Harris-Benedict (Classic)</option>
+        </select>
+      </div>
+
+      <button onclick="calculateBMR()">Calculate BMR</button>
+
+      <div class="results" id="results">
+        <div class="result-row">
+          <span class="result-label">Your BMR:</span>
+          <span class="result-value" id="bmrResult">0 kcal/day</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide">
+      <h3>What is BMR?</h3>
+      <p>
+        BMR (Basal Metabolic Rate) is the number of calories your body needs to maintain basic life functions (breathing, circulation, cell production) while at rest.
+      </p>
+      <p><strong>Formulas:</strong></p>
+      <div class="formula">
+        Mifflin-St Jeor:<br>
+        Men: (10 × weight) + (6.25 × height) - (5 × age) + 5<br>
+        Women: (10 × weight) + (6.25 × height) - (5 × age) - 161<br><br>
+        Harris-Benedict:<br>
+        Men: 88.362 + (13.397 × weight) + (4.799 × height) - (5.677 × age)<br>
+        Women: 447.593 + (9.247 × weight) + (3.098 × height) - (4.330 × age)
+      </div>
+    </div>
+
+    <a href="fitness.html" class="back-link">← Back to Fitness & Health Calculators</a>
+  </div>
+
+  <script>
+    function calculateBMR() {
+      const age = parseInt(document.getElementById('age').value);
+      const gender = document.querySelector('input[name="gender"]:checked').value;
+      const weight = parseFloat(document.getElementById('weight').value);
+      const height = parseFloat(document.getElementById('height').value);
+      const formula = document.getElementById('formula').value;
+
+      if (isNaN(age) || isNaN(weight) || isNaN(height) || age <= 0 || weight <= 0 || height <= 0) {
+        alert("Please enter valid positive numbers.");
+        return;
+      }
+
+      let bmr;
+      if (formula === 'mifflin') {
+        if (gender === 'male') {
+          bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+        } else {
+          bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+        }
+      } else {
+        if (gender === 'male') {
+          bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+        } else {
+          bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+        }
+      }
+
+      document.getElementById('bmrResult').textContent = Math.round(bmr) + ' kcal/day';
+      document.getElementById('results').style.display = 'block';
+    }
+
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') calculateBMR();
+    });
+  </script>
+</body>
+</html>

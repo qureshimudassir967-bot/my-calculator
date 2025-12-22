@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free Body Fat Calculator – Estimate body fat percentage using U.S. Navy method (with waist, neck, hip) or BMI-based formula.">
+  <title>Body Fat Calculator – Scientific Calc Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 26px;
+    }
+    .method-toggle {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .toggle-btn {
+      padding: 8px 16px;
+      margin: 0 5px;
+      border: 1px solid #0066cc;
+      background: #e0e9f5;
+      color: #0066cc;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .toggle-btn.active {
+      background: #0066cc;
+      color: white;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #444;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    .hidden {
+      display: none;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0055aa;
+    }
+    .results {
+      margin-top: 25px;
+      padding: 20px;
+      background: #eef5ff;
+      border-radius: 8px;
+      display: none;
+    }
+    .result-label {
+      font-weight: bold;
+    }
+    .result-value {
+      color: #0066cc;
+      font-weight: bold;
+      font-size: 20px;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #0066cc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .guide {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .guide h3 {
+      margin-bottom: 10px;
+      color: #0066cc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Body Fat Calculator</h1>
+      <p>Estimate your body fat percentage using trusted methods.</p>
+    </header>
+
+    <div class="method-toggle">
+      <button class="toggle-btn active" onclick="switchMethod('navy')">U.S. Navy Method</button>
+      <button class="toggle-btn" onclick="switchMethod('bmi')">BMI-Based Method</button>
+    </div>
+
+    <div class="calculator">
+      <div class="input-group">
+        <label for="age">Age (years)</label>
+        <input type="number" id="age" placeholder="e.g. 30" min="1" value="30">
+      </div>
+      <div class="input-group">
+        <label>Gender</label>
+        <div style="display:flex;gap:15px;">
+          <label><input type="radio" name="gender" value="male" checked> Male</label>
+          <label><input type="radio" name="gender" value="female"> Female</label>
+        </div>
+      </div>
+
+      <!-- Navy Method Inputs -->
+      <div id="navyInputs">
+        <div class="input-group">
+          <label for="navyWeight">Weight (kg)</label>
+          <input type="number" id="navyWeight" placeholder="e.g. 70" min="1" value="70">
+        </div>
+        <div class="input-group">
+          <label for="navyWaist">Waist (cm)</label>
+          <input type="number" id="navyWaist" placeholder="e.g. 86" min="1" value="86">
+        </div>
+        <div class="input-group">
+          <label for="navyNeck">Neck (cm)</label>
+          <input type="number" id="navyNeck" placeholder="e.g. 40" min="1" value="40">
+        </div>
+        <div class="input-group" id="navyHipRow">
+          <label for="navyHip">Hip (cm) – <em>Female only</em></label>
+          <input type="number" id="navyHip" placeholder="e.g. 100" min="1" value="100">
+        </div>
+      </div>
+
+      <!-- BMI Method Inputs -->
+      <div id="bmiInputs" class="hidden">
+        <div class="input-group">
+          <label for="bmiWeight">Weight (kg)</label>
+          <input type="number" id="bmiWeight" placeholder="e.g. 70" min="1" value="70">
+        </div>
+        <div class="input-group">
+          <label for="bmiHeight">Height (cm)</label>
+          <input type="number" id="bmiHeight" placeholder="e.g. 175" min="1" value="175">
+        </div>
+      </div>
+
+      <button onclick="calculateBodyFat()">Calculate Body Fat</button>
+
+      <div class="results" id="results">
+        <div class="result-label">Your Body Fat Percentage:</div>
+        <div class="result-value" id="bodyFatResult">0.0%</div>
+      </div>
+    </div>
+
+    <div class="guide">
+      <h3>About Body Fat</h3>
+      <p>
+        <strong>U.S. Navy Method</strong>: Uses waist, neck, and (for women) hip measurements.<br>
+        <strong>BMI Method</strong>: Estimates from weight and height (less accurate but simpler).
+      </p>
+      <p><strong>Healthy Ranges (Adults)</strong>:<br>
+        Men: 8–20% | Women: 20–30%
+      </p>
+    </div>
+
+    <a href="fitness.html" class="back-link">← Back to Fitness & Health Calculators</a>
+  </div>
+
+  <script>
+    let currentMethod = 'navy';
+
+    function switchMethod(method) {
+      currentMethod = method;
+      document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (method === 'navy') {
+        document.getElementById('navyInputs').classList.remove('hidden');
+        document.getElementById('bmiInputs').classList.add('hidden');
+      } else {
+        document.getElementById('navyInputs').classList.add('hidden');
+        document.getElementById('bmiInputs').classList.remove('hidden');
+      }
+
+      // Hide hip for males in navy method
+      if (method === 'navy') {
+        const gender = document.querySelector('input[name="gender"]:checked').value;
+        document.getElementById('navyHipRow').style.display = gender === 'female' ? 'block' : 'none';
+      }
+    }
+
+    document.querySelectorAll('input[name="gender"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        if (currentMethod === 'navy') {
+          document.getElementById('navyHipRow').style.display = this.value === 'female' ? 'block' : 'none';
+        }
+      });
+    });
+
+    function calculateBodyFat() {
+      const age = parseFloat(document.getElementById('age').value);
+      const gender = document.querySelector('input[name="gender"]:checked').value;
+
+      let bodyFat;
+      if (currentMethod === 'navy') {
+        const weight = parseFloat(document.getElementById('navyWeight').value);
+        const waist = parseFloat(document.getElementById('navyWaist').value);
+        const neck = parseFloat(document.getElementById('navyNeck').value);
+
+        if (gender === 'male') {
+          // Navy formula for men
+          bodyFat = 86.010 * Math.log10(waist - neck) - 70.041 * Math.log10(age) + 36.76;
+        } else {
+          const hip = parseFloat(document.getElementById('navyHip').value);
+          // Navy formula for women
+          bodyFat = 163.205 * Math.log10(waist + hip - neck) - 97.684 * Math.log10(age) - 78.387;
+        }
+      } else {
+        const weight = parseFloat(document.getElementById('bmiWeight').value);
+        const height = parseFloat(document.getElementById('bmiHeight').value);
+        const bmi = weight / Math.pow(height / 100, 2);
+        if (gender === 'male') {
+          bodyFat = 1.20 * bmi + 0.23 * age - 16.2;
+        } else {
+          bodyFat = 1.20 * bmi + 0.23 * age - 5.4;
+        }
+      }
+
+      if (isNaN(bodyFat) || bodyFat < 0) bodyFat = 0;
+      document.getElementById('bodyFatResult').textContent = bodyFat.toFixed(1) + '%';
+      document.getElementById('results').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

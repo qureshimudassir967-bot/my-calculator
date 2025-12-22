@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free Calorie Calculator – Estimate your daily calorie needs for weight loss, maintenance, or muscle gain based on age, gender, weight, height, and activity level.">
+  <title>Calorie Calculator – Scientific Calc Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 26px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #444;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    .radio-group {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .radio-option {
+      display: flex;
+      align-items: center;
+    }
+    .radio-option input {
+      width: auto;
+      margin-right: 8px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0055aa;
+    }
+    .results {
+      margin-top: 25px;
+      padding: 20px;
+      background: #eef5ff;
+      border-radius: 8px;
+      display: none;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .result-label {
+      font-weight: bold;
+    }
+    .result-value {
+      color: #0066cc;
+      font-weight: bold;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #0066cc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .guide {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .guide h3 {
+      margin-bottom: 10px;
+      color: #0066cc;
+    }
+    .note {
+      background: #fff8e1;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    @media (max-width: 600px) {
+      .radio-group { flex-direction: column; gap: 10px; }
+      .container { padding: 20px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Calorie Calculator</h1>
+      <p>Estimate your daily calorie needs for weight loss, maintenance, or gain.</p>
+    </header>
+
+    <div class="calculator">
+      <div class="input-group">
+        <label for="age">Age (years)</label>
+        <input type="number" id="age" placeholder="e.g. 30" min="1" max="120" value="30">
+      </div>
+      <div class="input-group">
+        <label>Gender</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="male" name="gender" value="male" checked>
+            <label for="male">Male</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="female" name="gender" value="female">
+            <label for="female">Female</label>
+          </div>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="weight">Weight (kg)</label>
+        <input type="number" id="weight" placeholder="e.g. 70" min="1" value="70">
+      </div>
+      <div class="input-group">
+        <label for="height">Height (cm)</label>
+        <input type="number" id="height" placeholder="e.g. 175" min="1" value="175">
+      </div>
+      <div class="input-group">
+        <label for="activity">Activity Level</label>
+        <select id="activity">
+          <option value="1.2">Sedentary (little or no exercise)</option>
+          <option value="1.375">Lightly active (light exercise 1–3 days/week)</option>
+          <option value="1.55" selected>Moderately active (moderate exercise 3–5 days/week)</option>
+          <option value="1.725">Very active (hard exercise 6–7 days/week)</option>
+          <option value="1.9">Extra active (very hard exercise & physical job)</option>
+        </select>
+      </div>
+
+      <button onclick="calculateCalories()">Calculate</button>
+
+      <div class="results" id="results">
+        <div class="result-row">
+          <span class="result-label">BMR (Basal):</span>
+          <span class="result-value" id="bmrResult">0 kcal</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Maintenance Calories:</span>
+          <span class="result-value" id="maintResult">0 kcal</span>
+        </div>
+        <div class="result-row" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #d0e4ff;">
+          <span class="result-label"><strong>For Weight Loss:</strong></span>
+          <span class="result-value" id="lossResult">0 kcal</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label"><strong>For Muscle Gain:</strong></span>
+          <span class="result-value" id="gainResult">0 kcal</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide">
+      <h3>How It Works</h3>
+      <p>
+        This calculator uses the <strong>Mifflin-St Jeor Equation</strong> to estimate your Basal Metabolic Rate (BMR), 
+        then adjusts for activity level to find your maintenance calories.
+      </p>
+      <p>
+        • <strong>Weight Loss</strong>: Maintenance – 500 kcal<br>
+        • <strong>Muscle Gain</strong>: Maintenance + 300–500 kcal
+      </p>
+      <div class="note">
+        ⚠️ These are estimates. Individual needs may vary based on body composition, health, and metabolism.
+      </div>
+    </div>
+
+    <a href="fitness.html" class="back-link">← Back to Fitness & Health Calculators</a>
+  </div>
+
+  <script>
+    function calculateCalories() {
+      const age = parseInt(document.getElementById('age').value);
+      const gender = document.querySelector('input[name="gender"]:checked').value;
+      const weight = parseFloat(document.getElementById('weight').value);
+      const height = parseFloat(document.getElementById('height').value);
+      const activity = parseFloat(document.getElementById('activity').value);
+
+      if (isNaN(age) || isNaN(weight) || isNaN(height) || age <= 0 || weight <= 0 || height <= 0) {
+        alert("Please enter valid positive numbers.");
+        return;
+      }
+
+      // Mifflin-St Jeor Equation
+      let bmr;
+      if (gender === 'male') {
+        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+      } else {
+        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+      }
+
+      const maintenance = bmr * activity;
+      const loss = maintenance - 500;
+      const gain = maintenance + 400;
+
+      document.getElementById('bmrResult').textContent = Math.round(bmr) + ' kcal';
+      document.getElementById('maintResult').textContent = Math.round(maintenance) + ' kcal';
+      document.getElementById('lossResult').textContent = Math.max(1200, Math.round(loss)) + ' kcal';
+      document.getElementById('gainResult').textContent = Math.round(gain) + ' kcal';
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    // Allow Enter key to calculate
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        calculateCalories();
+      }
+    });
+  </script>
+</body>
+</html>

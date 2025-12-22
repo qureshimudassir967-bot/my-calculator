@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free Pregnancy Due Date Calculator – Estimate your baby's due date based on the first day of your last menstrual period (LMP).">
+  <title>Pregnancy Due Date Calculator – Scientific Calc Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 26px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #444;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0055aa;
+    }
+    .results {
+      margin-top: 25px;
+      padding: 20px;
+      background: #eef5ff;
+      border-radius: 8px;
+      display: none;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .result-label {
+      font-weight: bold;
+    }
+    .result-value {
+      color: #0066cc;
+      font-weight: bold;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #0066cc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .guide {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .guide h3 {
+      margin-bottom: 10px;
+      color: #0066cc;
+    }
+    .note {
+      background: #e3f2fd;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Pregnancy Due Date Calculator</h1>
+      <p>Estimate your baby’s due date based on your last menstrual period (LMP).</p>
+    </header>
+
+    <div class="calculator">
+      <div class="input-group">
+        <label for="lmp">First Day of Last Menstrual Period (LMP)</label>
+        <input type="date" id="lmp">
+      </div>
+
+      <button onclick="calculateDueDate()">Calculate Due Date</button>
+
+      <div class="results" id="results">
+        <div class="result-row">
+          <span class="result-label">Due Date:</span>
+          <span class="result-value" id="dueDate"></span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Conception Date (Est.):</span>
+          <span class="result-value" id="conceptionDate"></span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Current Pregnancy Week:</span>
+          <span class="result-value" id="currentWeek"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide">
+      <h3>How It Works</h3>
+      <p>
+        This calculator uses **Naegele’s Rule**: add <strong>280 days (40 weeks)</strong> to the first day of your last menstrual period (LMP).
+      </p>
+      <p>
+        Note: Only about 5% of babies are born on their exact due date. Most arrive between 37–42 weeks.
+      </p>
+      <div class="note">
+        ⚠️ This tool is for informational purposes only. Always consult your healthcare provider for medical advice.
+      </div>
+    </div>
+
+    <a href="fitness.html" class="back-link">← Back to Fitness & Health Calculators</a>
+  </div>
+
+  <script>
+    function calculateDueDate() {
+      const lmpInput = document.getElementById('lmp').value;
+      if (!lmpInput) {
+        alert("Please select a date.");
+        return;
+      }
+
+      const lmp = new Date(lmpInput);
+      const dueDate = new Date(lmp);
+      dueDate.setDate(dueDate.getDate() + 280);
+
+      const conceptionDate = new Date(lmp);
+      conceptionDate.setDate(conceptionDate.getDate() + 14);
+
+      const today = new Date();
+      const diffTime = Math.abs(today - lmp);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const currentWeek = Math.floor(diffDays / 7);
+
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('dueDate').textContent = dueDate.toLocaleDateString(undefined, options);
+      document.getElementById('conceptionDate').textContent = conceptionDate.toLocaleDateString(undefined, options);
+      document.getElementById('currentWeek').textContent = currentWeek + " weeks";
+
+      document.getElementById('results').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
