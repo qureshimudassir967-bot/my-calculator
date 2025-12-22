@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free Concrete Calculator – Estimate how much concrete you need for slabs, footings, or columns in cubic yards or meters.">
+  <title>Concrete Calculator – Scientific Calc Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 26px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #444;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover { background: #0055aa; }
+    .results {
+      margin-top: 25px;
+      padding: 20px;
+      background: #eef5ff;
+      border-radius: 8px;
+      display: none;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .result-label { font-weight: bold; }
+    .result-value { color: #0066cc; font-weight: bold; }
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #0066cc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .guide {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .guide h3 { margin-bottom: 10px; color: #0066cc; }
+    .formula {
+      background: #f0f8ff;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 8px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Concrete Calculator</h1>
+      <p>Estimate concrete volume for slabs, footings, or columns.</p>
+    </header>
+
+    <div class="input-group">
+      <label for="shape">Shape</label>
+      <select id="shape" onchange="toggleInputs()">
+        <option value="slab">Slab / Footing</option>
+        <option value="column">Column / Post</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label for="length">Length (feet)</label>
+      <input type="number" id="length" placeholder="e.g. 10" min="0" value="10">
+    </div>
+    <div class="input-group">
+      <label for="width">Width (feet)</label>
+      <input type="number" id="width" placeholder="e.g. 8" min="0" value="8">
+    </div>
+    <div class="input-group">
+      <label for="depth">Depth / Height (inches)</label>
+      <input type="number" id="depth" placeholder="e.g. 4" min="0" value="4">
+    </div>
+    <div class="input-group" id="diameterRow" style="display:none;">
+      <label for="diameter">Diameter (inches)</label>
+      <input type="number" id="diameter" placeholder="e.g. 12" min="0" value="12">
+    </div>
+
+    <button onclick="calculateConcrete()">Calculate Concrete</button>
+
+    <div class="results" id="results">
+      <div class="result-row">
+        <span class="result-label">Volume (cubic feet):</span>
+        <span class="result-value" id="cubicFeet">0.00</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Volume (cubic yards):</span>
+        <span class="result-value" id="cubicYards">0.00</span>
+      </div>
+    </div>
+
+    <div class="guide">
+      <h3>How It Works</h3>
+      <p>
+        For slabs: Volume = Length × Width × (Depth / 12)<br>
+        For columns: Volume = π × (Diameter/24)² × Height
+      </p>
+      <div class="formula">
+        1 cubic yard = 27 cubic feet<br>
+        Always order 5–10% extra concrete to account for waste.
+      </div>
+    </div>
+
+    <a href="other.html" class="back-link">← Back to Other Calculators</a>
+  </div>
+
+  <script>
+    function toggleInputs() {
+      const shape = document.getElementById('shape').value;
+      const diameterRow = document.getElementById('diameterRow');
+      if (shape === 'column') {
+        diameterRow.style.display = 'block';
+      } else {
+        diameterRow.style.display = 'none';
+      }
+    }
+
+    function calculateConcrete() {
+      const shape = document.getElementById('shape').value;
+      const length = parseFloat(document.getElementById('length').value) || 0;
+      const width = parseFloat(document.getElementById('width').value) || 0;
+      const depth = parseFloat(document.getElementById('depth').value) || 0;
+
+      let volume = 0;
+      if (shape === 'slab') {
+        volume = length * width * (depth / 12);
+      } else {
+        const diameter = parseFloat(document.getElementById('diameter').value) || 0;
+        const radius = diameter / 24; // inches to feet
+        volume = Math.PI * radius * radius * length;
+      }
+
+      if (volume <= 0) {
+        alert("Please enter valid dimensions.");
+        return;
+      }
+
+      const cubicYards = volume / 27;
+      document.getElementById('cubicFeet').textContent = volume.toFixed(2);
+      document.getElementById('cubicYards').textContent = cubicYards.toFixed(2);
+      document.getElementById('results').style.display = 'block';
+    }
+
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') calculateConcrete();
+    });
+  </script>
+</body>
+</html>

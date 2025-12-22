@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free Salary Calculator – Convert annual salary to hourly wage or vice versa based on work hours per week.">
+  <title>Salary Calculator – Scientific Calc Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 26px;
+    }
+    .mode-toggle {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .toggle-btn {
+      padding: 8px 12px;
+      margin: 0 5px;
+      border: 1px solid #0066cc;
+      background: #e0e9f5;
+      color: #0066cc;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .toggle-btn.active {
+      background: #0066cc;
+      color: white;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #444;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    .hidden { display: none; }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover { background: #0055aa; }
+    .results {
+      margin-top: 25px;
+      padding: 20px;
+      background: #eef5ff;
+      border-radius: 8px;
+      display: none;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .result-label { font-weight: bold; }
+    .result-value { color: #0066cc; font-weight: bold; }
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #0066cc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .guide {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .guide h3 { margin-bottom: 10px; color: #0066cc; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Salary Calculator</h1>
+      <p>Convert between annual salary and hourly wage.</p>
+    </header>
+
+    <div class="mode-toggle">
+      <button class="toggle-btn active" onclick="switchSalaryMode('annual')">Annual → Hourly</button>
+      <button class="toggle-btn" onclick="switchSalaryMode('hourly')">Hourly → Annual</button>
+    </div>
+
+    <!-- Annual to Hourly -->
+    <div id="mode1">
+      <div class="input-group">
+        <label for="annual">Annual Salary ($)</label>
+        <input type="number" id="annual" placeholder="e.g. 52000" min="0" value="52000">
+      </div>
+      <div class="input-group">
+        <label for="hours1">Hours per Week</label>
+        <input type="number" id="hours1" placeholder="e.g. 40" min="1" max="168" value="40">
+      </div>
+    </div>
+
+    <!-- Hourly to Annual -->
+    <div id="mode2" class="hidden">
+      <div class="input-group">
+        <label for="hourly">Hourly Wage ($)</label>
+        <input type="number" id="hourly" placeholder="e.g. 25" min="0" value="25">
+      </div>
+      <div class="input-group">
+        <label for="hours2">Hours per Week</label>
+        <input type="number" id="hours2" placeholder="e.g. 40" min="1" max="168" value="40">
+      </div>
+    </div>
+
+    <button onclick="calculateSalary()">Calculate</button>
+
+    <div class="results" id="results">
+      <div class="result-row">
+        <span class="result-label" id="resultLabel">Hourly Wage:</span>
+        <span class="result-value" id="salaryResult">$0.00</span>
+      </div>
+    </div>
+
+    <div class="guide">
+      <h3>How It Works</h3>
+      <p>
+        • Annual → Hourly: Salary ÷ (52 weeks × hours/week)<br>
+        • Hourly → Annual: Wage × (52 weeks × hours/week)
+      </p>
+      <p>Assumes full-time work with no unpaid leave.</p>
+    </div>
+
+    <a href="other.html" class="back-link">← Back to Other Calculators</a>
+  </div>
+
+  <script>
+    let salaryMode = 'annual';
+
+    function switchSalaryMode(mode) {
+      salaryMode = mode;
+      document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      document.getElementById('mode1').classList.toggle('hidden', mode !== 'annual');
+      document.getElementById('mode2').classList.toggle('hidden', mode !== 'hourly');
+      document.getElementById('resultLabel').textContent = 
+        mode === 'annual' ? 'Hourly Wage:' : 'Annual Salary:';
+    }
+
+    function calculateSalary() {
+      let result = 0;
+      if (salaryMode === 'annual') {
+        const annual = parseFloat(document.getElementById('annual').value) || 0;
+        const hours = parseFloat(document.getElementById('hours1').value) || 0;
+        if (hours > 0) result = annual / (52 * hours);
+      } else {
+        const hourly = parseFloat(document.getElementById('hourly').value) || 0;
+        const hours = parseFloat(document.getElementById('hours2').value) || 0;
+        result = hourly * 52 * hours;
+      }
+
+      if (result > 0) {
+        document.getElementById('salaryResult').textContent = '$' + result.toFixed(2);
+        document.getElementById('results').style.display = 'block';
+      } else {
+        alert("Please enter valid positive numbers.");
+      }
+    }
+
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') calculateSalary();
+    });
+  </script>
+</body>
+</html>

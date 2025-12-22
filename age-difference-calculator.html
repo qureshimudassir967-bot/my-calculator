@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free Age Difference Calculator – Find the exact age gap between two people in years, months, and days.">
+  <title>Age Difference Calculator – Scientific Calc Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 26px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #444;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover { background: #0055aa; }
+    .results {
+      margin-top: 25px;
+      padding: 20px;
+      background: #eef5ff;
+      border-radius: 8px;
+      display: none;
+      text-align: center;
+    }
+    .result-value {
+      color: #0066cc;
+      font-weight: bold;
+      font-size: 20px;
+      margin: 10px 0;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #0066cc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+    .guide {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .guide h3 { margin-bottom: 10px; color: #0066cc; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Age Difference Calculator</h1>
+      <p>Find the exact age gap between two people.</p>
+    </header>
+
+    <div class="input-group">
+      <label for="date1">Person 1 Birth Date</label>
+      <input type="date" id="date1" max="">
+    </div>
+    <div class="input-group">
+      <label for="date2">Person 2 Birth Date</label>
+      <input type="date" id="date2" max="">
+    </div>
+
+    <button onclick="calculateAgeDifference()">Calculate Age Difference</button>
+
+    <div class="results" id="results">
+      <div class="result-value" id="ageDiffResult"></div>
+      <div id="whoIsOlder"></div>
+    </div>
+
+    <div class="guide">
+      <h3>About This Calculator</h3>
+      <p>
+        Perfect for parents (child spacing), relationships, or family history.
+        Result shows the precise difference in years, months, and days.
+      </p>
+    </div>
+
+    <a href="other.html" class="back-link">← Back to Other Calculators</a>
+  </div>
+
+  <script>
+    document.getElementById('date1').max = new Date().toISOString().split('T')[0];
+    document.getElementById('date2').max = new Date().toISOString().split('T')[0];
+
+    function calculateAgeDifference() {
+      const d1 = new Date(document.getElementById('date1').value);
+      const d2 = new Date(document.getElementById('date2').value);
+      if (isNaN(d1.getTime()) || isNaN(d2.getTime())) {
+        alert("Please select both birth dates.");
+        return;
+      }
+
+      if (d1 > d2) {
+        [d1, d2] = [d2, d1]; // Ensure d1 is older
+        var names = ["Person 2", "Person 1"];
+      } else {
+        var names = ["Person 1", "Person 2"];
+      }
+
+      let years = d2.getFullYear() - d1.getFullYear();
+      let months = d2.getMonth() - d1.getMonth();
+      let days = d2.getDate() - d1.getDate();
+
+      if (days < 0) {
+        months--;
+        const lastMonth = new Date(d2.getFullYear(), d2.getMonth(), 0);
+        days += lastMonth.getDate();
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      const diffText = `${years} years, ${months} months, ${days} days`;
+      document.getElementById('ageDiffResult').textContent = diffText;
+      document.getElementById('whoIsOlder').innerHTML = `${names[1]} is older than ${names[0]}.`;
+      document.getElementById('results').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
