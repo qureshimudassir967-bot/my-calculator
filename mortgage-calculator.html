@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Free Mortgage Calculator – Estimate your monthly home loan payment including principal, interest, taxes, insurance, and PMI.">
+  <title>Mortgage Calculator – Scientific Calc Pro</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 750px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 26px;
+    }
+    .calculator {
+      background: #f8fbff;
+      padding: 25px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+    }
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #444;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+      margin-right: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0055aa;
+    }
+    .results {
+      margin-top: 25px;
+      padding: 20px;
+      background: #eef5ff;
+      border-radius: 8px;
+      display: none;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .result-label {
+      font-weight: bold;
+    }
+    .result-value {
+      color: #0066cc;
+      font-weight: bold;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 25px;
+      color: #0066cc;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .guide {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .guide h3 {
+      margin-bottom: 10px;
+      color: #0066cc;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 20px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Mortgage Calculator</h1>
+      <p>Calculate your monthly home loan payment including taxes, insurance, and PMI.</p>
+    </header>
+
+    <div class="calculator">
+      <div class="input-group">
+        <label for="homePrice">Home Price ($)</label>
+        <input type="number" id="homePrice" placeholder="e.g. 300000" min="1" value="300000">
+      </div>
+      <div class="input-group">
+        <label for="downPayment">Down Payment ($)</label>
+        <input type="number" id="downPayment" placeholder="e.g. 60000" min="0" value="60000">
+      </div>
+      <div class="input-group">
+        <label for="interestRate">Annual Interest Rate (%)</label>
+        <input type="number" id="interestRate" placeholder="e.g. 6.5" step="0.01" min="0" value="6.5">
+      </div>
+      <div class="input-group">
+        <label for="loanTerm">Loan Term (Years)</label>
+        <input type="number" id="loanTerm" placeholder="e.g. 30" min="1" max="50" value="30">
+      </div>
+      <div class="input-group">
+        <label for="propertyTax">Annual Property Tax ($)</label>
+        <input type="number" id="propertyTax" placeholder="e.g. 3000" min="0" value="3000">
+      </div>
+      <div class="input-group">
+        <label for="homeInsurance">Annual Home Insurance ($)</label>
+        <input type="number" id="homeInsurance" placeholder="e.g. 1200" min="0" value="1200">
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="pmiCheckbox">
+        <label for="pmiCheckbox" style="display: inline;">Add PMI (Private Mortgage Insurance)</label>
+      </div>
+
+      <button onclick="calculateMortgage()">Calculate</button>
+
+      <div class="results" id="results">
+        <div class="result-row">
+          <span class="result-label">Loan Amount:</span>
+          <span class="result-value" id="loanAmount">$0.00</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Monthly Principal & Interest:</span>
+          <span class="result-value" id="principalInterest">$0.00</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Monthly Taxes & Insurance:</span>
+          <span class="result-value" id="taxesInsurance">$0.00</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Monthly PMI:</span>
+          <span class="result-value" id="pmiAmount">$0.00</span>
+        </div>
+        <div class="result-row" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #d0e4ff;">
+          <span class="result-label"><strong>Total Monthly Payment:</strong></span>
+          <span class="result-value" id="totalMonthly">$0.00</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Total Interest Paid:</span>
+          <span class="result-value" id="totalInterest">$0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide">
+      <h3>How to Use</h3>
+      <p>
+        Enter your <strong>home price</strong>, <strong>down payment</strong>, <strong>interest rate</strong>, and <strong>loan term</strong>.
+        Optionally add property tax, insurance, and PMI for a complete estimate.
+      </p>
+      <p>
+        <strong>PMI</strong> is typically required if your down payment is less than 20% of the home price.
+      </p>
+    </div>
+
+    <a href="financial.html" class="back-link">← Back to Financial Calculators</a>
+  </div>
+
+  <script>
+    function calculateMortgage() {
+      const homePrice = parseFloat(document.getElementById('homePrice').value);
+      const downPayment = parseFloat(document.getElementById('downPayment').value);
+      const annualRate = parseFloat(document.getElementById('interestRate').value);
+      const loanTermYears = parseInt(document.getElementById('loanTerm').value);
+      const propertyTax = parseFloat(document.getElementById('propertyTax').value) || 0;
+      const homeInsurance = parseFloat(document.getElementById('homeInsurance').value) || 0;
+      const pmiChecked = document.getElementById('pmiCheckbox').checked;
+
+      if (isNaN(homePrice) || isNaN(downPayment) || isNaN(annualRate) || isNaN(loanTermYears) ||
+          homePrice <= 0 || downPayment < 0 || annualRate < 0 || loanTermYears <= 0) {
+        alert("Please enter valid numbers.");
+        return;
+      }
+
+      if (downPayment > homePrice) {
+        alert("Down payment cannot exceed home price.");
+        return;
+      }
+
+      const loanAmount = homePrice - downPayment;
+      const monthlyRate = annualRate / 100 / 12;
+      const totalMonths = loanTermYears * 12;
+
+      let principalInterest = 0;
+      if (monthlyRate > 0) {
+        principalInterest = loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths) / 
+                           (Math.pow(1 + monthlyRate, totalMonths) - 1);
+      } else {
+        principalInterest = loanAmount / totalMonths;
+      }
+
+      const monthlyTaxes = propertyTax / 12;
+      const monthlyInsurance = homeInsurance / 12;
+
+      let pmi = 0;
+      if (pmiChecked && (downPayment / homePrice) < 0.2) {
+        // Estimate PMI: 0.5% to 1.5% of loan amount annually → use 1%
+        pmi = loanAmount * 0.01 / 12;
+      }
+
+      const totalMonthly = principalInterest + monthlyTaxes + monthlyInsurance + pmi;
+      const totalInterest = (principalInterest * totalMonths) - loanAmount;
+
+      // Update results
+      document.getElementById('loanAmount').textContent = '$' + loanAmount.toFixed(2);
+      document.getElementById('principalInterest').textContent = '$' + principalInterest.toFixed(2);
+      document.getElementById('taxesInsurance').textContent = '$' + (monthlyTaxes + monthlyInsurance).toFixed(2);
+      document.getElementById('pmiAmount').textContent = '$' + pmi.toFixed(2);
+      document.getElementById('totalMonthly').textContent = '$' + totalMonthly.toFixed(2);
+      document.getElementById('totalInterest').textContent = '$' + totalInterest.toFixed(2);
+
+      document.getElementById('results').style.display = 'block';
+    }
+
+    // Allow Enter key to calculate
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        calculateMortgage();
+      }
+    });
+  </script>
+</body>
+</html>
